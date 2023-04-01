@@ -215,4 +215,50 @@ class LoteRepositoryTest {
         assertEquals(produto2, resultado.getProduto());
     }
 
+    @Test
+    @DisplayName("Deletar lote de produtos no BD vazio (ou que não foi adicionado no BD)")
+    void deletarLoteDeProdutosNoBDVazioOuQueNaoFoiAdicionadoNoBD() {
+        // Arrange
+        driver.deleteAll();
+        int tamanhoAnterior = driver.findAll().size();
+        //Act
+        driver.delete(lote);
+        //Assert
+        assertTrue(driver.findAll().isEmpty());
+        assertEquals(tamanhoAnterior, driver.findAll().size());
+    }
+
+    @Test
+    @DisplayName("Deletar lote de produtos no BD")
+    void deletarLoteDeProdutosNoBD() {
+        // Arrange
+        driver.deleteAll();
+        driver.save(lote);
+        Integer tamanhoAnterior = driver.findAll().size();
+        // Act
+        driver.delete(lote);
+        // Assert
+        assertEquals(tamanhoAnterior - 1, driver.findAll().size());
+    }
+
+    @Test
+    @DisplayName("Deletar todos lotes de produtos no BD vazio")
+    void deletarTodosLotesDeProdutosNoBDVazio() {
+        // Act
+        driver.deleteAll();
+        // Assert
+        assertTrue(driver.findAll().isEmpty());
+    }
+
+    @Test
+    @DisplayName("Deletar todos lotes de produtos no BD")
+    void deletarTodosLotesDeProdutosNoBD() {
+        // Arrange
+        driver.save(lote);
+        // Act
+        driver.deleteAll();
+        // Assert
+        assertTrue(driver.findAll().isEmpty());
+    }
+
 }
