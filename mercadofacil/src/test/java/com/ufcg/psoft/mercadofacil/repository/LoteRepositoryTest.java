@@ -1,5 +1,7 @@
 package com.ufcg.psoft.mercadofacil.repository;
 
+import java.util.List;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -19,8 +21,6 @@ class LoteRepositoryTest {
     LoteRepository<Lote, Long> driver;
 
     Lote lote;
-
-    Lote resultado;
 
     Produto produto;
 
@@ -52,7 +52,7 @@ class LoteRepositoryTest {
         // Arrange
         driver.deleteAll();
         // Act
-        resultado = driver.save(lote);
+        Lote resultado = driver.save(lote);
         // Assert
         assertNotNull(resultado);
         assertEquals(1, driver.findAll().size());
@@ -137,6 +137,45 @@ class LoteRepositoryTest {
         assertNotNull(resultado);
         assertEquals(lote2.getId().longValue(), resultado.getId().longValue());
         assertEquals(produto2, resultado.getProduto());
+    }
+
+    @Test
+    @DisplayName("Listar lote de produtos no BD vazio")
+    void listarLoteDeProdutosNoBDVazio() {
+        // Arrange
+        driver.deleteAll();
+        // Act
+        List<Lote> resultado = driver.findAll();
+        // Assert
+        assertNotNull(resultado);
+        assertTrue(resultado.isEmpty());
+    }
+
+    @Test
+    @DisplayName("Listar lote de produtos no BD")
+    void listarLoteDeProdutosNoBD() {
+        // Arrange
+        driver.deleteAll();
+        Produto produto2 = Produto.builder()
+                .id(2L)
+                .nome("Produto Dois")
+                .codigoBarra("987654321")
+                .fabricante("Fabricante Dois")
+                .preco(200.00)
+                .build();
+        Lote lote2 = lote.builder()
+                .id(2L)
+                .numeroDeItens(200)
+                .produto(produto2)
+                .build();
+        driver.save(lote);
+        driver.save(lote2);
+        // Act
+        List<Lote> resultado = driver.findAll();
+        // Assert
+        assertNotNull(resultado);
+        assertFalse(resultado.isEmpty());
+        assertEquals(2, resultado.size());
     }
 
 }
