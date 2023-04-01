@@ -178,4 +178,41 @@ class LoteRepositoryTest {
         assertEquals(2, resultado.size());
     }
 
+    @Test
+    @DisplayName("Atualizar lote de produtos no BD vazio (ou que não foi adicionado no BD)")
+    void atualizarLoteDeProdutosNoBDVazioOuQueNaoFoiAdicionadoNoBD() {
+        // Arrange
+        driver.deleteAll();
+        lote.setNumeroDeItens(301);
+        // Act
+        Lote resultado = driver.update(lote);
+        // Assert
+        assertTrue(driver.findAll().isEmpty());
+        assertNull(resultado);
+    }
+
+    @Test
+    @DisplayName("Atualizar lote de produtos no BD")
+    void atualizarLoteDeProdutosNoBD() {
+        // Arrange
+        Produto produto2 = Produto.builder()
+                .id(2L)
+                .nome("Produto Dois")
+                .codigoBarra("987654321")
+                .fabricante("Fabricante Dois")
+                .preco(200.00)
+                .build();
+        driver.deleteAll();
+        driver.save(lote);
+        lote.setNumeroDeItens(1000);
+        lote.setProduto(produto2);
+        // Act
+        Lote resultado = driver.update(lote);
+        // Assert
+        assertNotNull(resultado);
+        assertEquals(lote.getId().longValue(), resultado.getId().longValue());
+        assertEquals(1000, lote.getNumeroDeItens());
+        assertEquals(produto2, resultado.getProduto());
+    }
+
 }
