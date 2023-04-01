@@ -87,4 +87,56 @@ class LoteRepositoryTest {
         assertEquals(produto2, resultado.getProduto());
     }
 
+    @Test
+    @DisplayName("Buscar lote de produtos no BD vazio")
+    void buscarLoteDeProdutosNoBDVazio() {
+        // Arrange
+        driver.deleteAll();
+        // Act
+        Lote resultado = driver.find(lote.getId());
+        // Assert
+        assertEquals(0, driver.findAll().size());
+        assertNull(resultado);
+    }
+
+    @Test
+    @DisplayName("Buscar lote de produtos no BD")
+    void buscarLoteDeProdutosNoBD() {
+        // Arrange
+        driver.save(lote);
+        // Act
+        Lote resultado = driver.find(lote.getId());
+        // Assert
+        assertNotNull(resultado);
+        assertEquals(lote.getId().longValue(), resultado.getId().longValue());
+        assertEquals(produto, resultado.getProduto());
+    }
+
+    @Test
+    @DisplayName("Buscar lote de produtos no BD com mais de um lote")
+    void buscarLoteDeProdutosNoBDComMaisDeUmLote() {
+        // Arrange
+        driver.deleteAll();
+        Produto produto2 = Produto.builder()
+                .id(2L)
+                .nome("Produto Dois")
+                .codigoBarra("987654321")
+                .fabricante("Fabricante Dois")
+                .preco(200.00)
+                .build();
+        Lote lote2 = lote.builder()
+                .id(2L)
+                .numeroDeItens(200)
+                .produto(produto2)
+                .build();
+        driver.save(lote);
+        driver.save(lote2);
+        // Act
+        Lote resultado = driver.find(lote2.getId());
+        // Assert
+        assertNotNull(resultado);
+        assertEquals(lote2.getId().longValue(), resultado.getId().longValue());
+        assertEquals(produto2, resultado.getProduto());
+    }
+
 }
