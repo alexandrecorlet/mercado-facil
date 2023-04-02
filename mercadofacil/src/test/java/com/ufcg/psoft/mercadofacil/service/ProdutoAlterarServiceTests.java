@@ -68,6 +68,20 @@ public class ProdutoAlterarServiceTests {
     }
 
     @Test
+    @DisplayName("Quando um novo nome inválido for fornecido para o produto")
+    void quandoNovoNomeInvalido() {
+        // Arrange
+        produto.setNome("");
+        // Act
+        RuntimeException thrown = assertThrows(
+                RuntimeException.class,
+                () -> driver.alterar(produto)
+        );
+        // Assert
+        assertEquals("Nome inválido!", thrown.getMessage());
+    }
+
+    @Test
     @DisplayName("Quando um preço inválido for fornecido para o produto")
     void precoMenorIgualAZero() {
         // Arrange
