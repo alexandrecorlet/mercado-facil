@@ -61,4 +61,38 @@ public class ProdutoAlterarServiceTests {
         assertEquals("Produto Dez Atualizado", resultado.getNome());
     }
 
+    @Test
+    @DisplayName("Quando um preço inválido for fornecido para o produto")
+    void precoMenorIgualAZero() {
+        // Arrange
+        produto.setPreco(0.0);
+        // Act
+        RuntimeException thrown = assertThrows(
+                RuntimeException.class,
+                () -> driver.alterar(produto)
+        );
+        // Assert
+        assertEquals("Preço inválido!", thrown.getMessage());
+    }
+
+    @Test
+    @DisplayName("Quando um preço válido for fornecido para o produto")
+    void quandoNovoPrecoValido() {
+        // Arrange
+        produto.setPreco(1999.00);
+        Mockito.when(produtoRepository.update(produto))
+                .thenReturn(Produto.builder()
+                        .id(10L)
+                        .codigoBarra("7899137500104")
+                        .nome("Produto Dez")
+                        .fabricante("Empresa Dez")
+                        .preco(1999.00)
+                        .build()
+                );
+        // Act
+        Produto resultado = driver.alterar(produto);
+        // Assert
+        assertEquals(1999.00, resultado.getPreco());
+    }
+
 }
