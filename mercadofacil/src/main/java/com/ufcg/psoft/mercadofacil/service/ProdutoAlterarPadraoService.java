@@ -15,6 +15,7 @@ public class ProdutoAlterarPadraoService implements ProdutoAlterarService {
 
     @Override
     public Produto alterar(Produto produto) {
+        if (produto.getPreco() <= 0.0) throw new RuntimeException("Preço inválido!");
         return produtoRepository.update(produto);
     }
 
