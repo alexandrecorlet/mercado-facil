@@ -115,4 +115,38 @@ public class ProdutoAlterarServiceTests {
         assertEquals(1999.00, resultado.getPreco());
     }
 
+    @Test
+    @DisplayName("Quando um fabricante inválido for fornecido para o produto")
+    void quandoFabricanteInvalido() {
+        // Arrange
+        produto.setFabricante("");
+        // Act
+        RuntimeException thrown = assertThrows(
+                RuntimeException.class,
+                () -> driver.alterar(produto)
+        );
+        // Assert
+        assertEquals("Fabricante inválido!", thrown.getMessage());
+    }
+
+    @Test
+    @DisplayName("Quando um fabricante válido for fornecido para o produto")
+    void quandoFabricanteValido() {
+        // Arrange
+        produto.setFabricante("Fabricante Valido");
+        Mockito.when(produtoRepository.update(produto))
+                .thenReturn(Produto.builder()
+                        .id(10L)
+                        .codigoBarra("7899137500104")
+                        .nome("Produto Dez")
+                        .fabricante("Fabricante Valido")
+                        .preco(450.00)
+                        .build()
+                );
+        // Act
+        Produto resultado = driver.alterar(produto);
+        // Assert
+        assertEquals("Fabricante Valido", resultado.getFabricante());
+    }
+
 }
