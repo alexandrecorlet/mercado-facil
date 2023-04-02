@@ -1,5 +1,6 @@
 package com.ufcg.psoft.mercadofacil.service;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,6 +39,11 @@ public class ProdutoAlterarServiceTests {
                         .build()
                 );
         produto = produtoRepository.find(10L);
+    }
+
+    @AfterEach
+    void tearDown() {
+        produto = null;
     }
 
     @Test
