@@ -252,6 +252,9 @@ class LoteRepositoryTest {
         driver.delete(lote);
         // Assert
         assertEquals(tamanhoAnterior - 1, driver.findAll().size());
+        // Verifica se o lote de produtos que deletamos realmente foi deletado da lista
+        for (Lote l : driver.findAll())
+            assertNotEquals(l.getId().longValue(), lote.getId().longValue());
     }
 
     @Test
