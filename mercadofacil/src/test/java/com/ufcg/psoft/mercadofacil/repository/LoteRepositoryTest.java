@@ -233,6 +233,19 @@ class LoteRepositoryTest {
     void deletarLoteDeProdutosNoBD() {
         // Arrange
         driver.deleteAll();
+        Produto produto2 = Produto.builder()
+                .id(2L)
+                .nome("Produto Dois")
+                .codigoBarra("987654321")
+                .fabricante("Fabricante Dois")
+                .preco(200.00)
+                .build();
+        Lote lote2 = lote.builder()
+                .id(2L)
+                .numeroDeItens(200)
+                .produto(produto2)
+                .build();
+        driver.save(lote2);
         driver.save(lote);
         Integer tamanhoAnterior = driver.findAll().size();
         // Act
