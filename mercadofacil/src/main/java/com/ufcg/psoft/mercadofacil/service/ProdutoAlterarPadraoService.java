@@ -38,11 +38,9 @@ public class ProdutoAlterarPadraoService implements ProdutoAlterarService {
 
     private boolean validarDigitoVerificadorCodigoDeBarra(String codigoBarra) {
         int soma = 0;
-        boolean f = false;
         for (int i = 0; i < codigoBarra.length() - 1; ++i) {
             int num = Integer.parseInt(String.valueOf(codigoBarra.charAt(i)));
-            soma += (f) ? num * 3 : num;
-            f = !f;
+            soma += i % 2 == 1 ? num * 3 : num;
         }
         int digitoVerificador = (10 - (soma % 10)) % 10;
         return digitoVerificador == Integer.parseInt(String.valueOf(codigoBarra.charAt(codigoBarra.length() - 1)));
