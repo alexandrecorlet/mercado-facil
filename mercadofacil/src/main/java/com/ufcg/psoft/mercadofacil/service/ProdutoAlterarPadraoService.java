@@ -15,10 +15,37 @@ public class ProdutoAlterarPadraoService implements ProdutoAlterarService {
 
     @Override
     public Produto alterar(Produto produto) {
+        if (!ehCodigoDeBarraValido(produto.getCodigoBarra())) throw new RuntimeException("Código de barra inválido!");
         if (produto.getFabricante().isEmpty()) throw new RuntimeException("Fabricante inválido!");
         if (produto.getNome().isEmpty()) throw new RuntimeException("Nome inválido!");
         if (produto.getPreco() <= 0.0) throw new RuntimeException("Preço inválido!");
         return produtoRepository.update(produto);
+    }
+
+    private boolean ehCodigoDeBarraValido(String codigoBarra) {
+        return (validarTamanhoCodigoDeBarra(codigoBarra)
+                && validarIdCodigoDeBarra(codigoBarra)
+                && validarDigitoVerificadorCodigoDeBarra(codigoBarra));
+    }
+
+    private boolean validarTamanhoCodigoDeBarra(String codigoBarra) {
+        return codigoBarra.length() == 13;
+    }
+
+    private boolean validarIdCodigoDeBarra(String codigoBarra) {
+        return Integer.parseInt(codigoBarra.substring(8, 12)) >= 1;
+    }
+
+    private boolean validarDigitoVerificadorCodigoDeBarra(String codigoBarra) {
+        int soma = 0;
+        boolean f = false;
+        for (int i = 0; i < codigoBarra.length() - 1; ++i) {
+            int num = Integer.parseInt(String.valueOf(codigoBarra.charAt(i)));
+            soma += (f) ? num * 3 : num;
+            f = !f;
+        }
+        int digitoVerificador = (10 - (soma % 10)) % 10;
+        return digitoVerificador == Integer.parseInt(String.valueOf(codigoBarra.charAt(codigoBarra.length() - 1)));
     }
 
 }

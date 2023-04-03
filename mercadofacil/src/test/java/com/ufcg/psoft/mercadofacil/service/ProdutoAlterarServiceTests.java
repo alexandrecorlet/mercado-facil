@@ -32,7 +32,7 @@ public class ProdutoAlterarServiceTests {
         Mockito.when(produtoRepository.find(10L))
                 .thenReturn(Produto.builder()
                         .id(10L)
-                        .codigoBarra("7899137500104")
+                        .codigoBarra("4012345678901")
                         .nome("Produto Dez")
                         .fabricante("Empresa Dez")
                         .preco(450.00)
@@ -54,7 +54,7 @@ public class ProdutoAlterarServiceTests {
         Mockito.when(produtoRepository.update(produto))
                 .thenReturn(Produto.builder()
                         .id(10L)
-                        .codigoBarra("7899137500104")
+                        .codigoBarra("4012345678901")
                         .nome("Produto Dez Atualizado")
                         .fabricante("Empresa Dez")
                         .preco(450.00)
@@ -103,7 +103,7 @@ public class ProdutoAlterarServiceTests {
         Mockito.when(produtoRepository.update(produto))
                 .thenReturn(Produto.builder()
                         .id(10L)
-                        .codigoBarra("7899137500104")
+                        .codigoBarra("4012345678901")
                         .nome("Produto Dez")
                         .fabricante("Empresa Dez")
                         .preco(1999.00)
@@ -137,7 +137,7 @@ public class ProdutoAlterarServiceTests {
         Mockito.when(produtoRepository.update(produto))
                 .thenReturn(Produto.builder()
                         .id(10L)
-                        .codigoBarra("7899137500104")
+                        .codigoBarra("4012345678901")
                         .nome("Produto Dez")
                         .fabricante("Fabricante Valido")
                         .preco(450.00)
@@ -149,4 +149,65 @@ public class ProdutoAlterarServiceTests {
         assertEquals("Fabricante Valido", resultado.getFabricante());
     }
 
+    @Test
+    @DisplayName("Quando um código de barra inválido (tamanho != 13) for fornecido para o produto")
+    void quandoCodigoBarraTemTamanhoInvalido() {
+        // Arrange
+        produto.setCodigoBarra("000000000000");
+        // Act
+        RuntimeException thrown = assertThrows(
+                RuntimeException.class,
+                () -> driver.alterar(produto)
+        );
+        // Assert
+        assertEquals("Código de barra inválido!", thrown.getMessage());
+    }
+
+    @Test
+    @DisplayName("Quando um código de barra inválido (id não começa a partir de 0001) for fornecido para o produto")
+    void quandoCodigoBarraTemIDInvalido() {
+        // Arrange
+        produto.setCodigoBarra("7899137500004");
+        // Act
+        RuntimeException thrown = assertThrows(
+                RuntimeException.class,
+                () -> driver.alterar(produto)
+        );
+        // Assert
+        assertEquals("Código de barra inválido!", thrown.getMessage());
+    }
+
+    @Test
+    @DisplayName("Quando um código de barra inválido (digito verificador errado) for fornecido para o produto")
+    void quandoCodigoBarraTemDigitoVerificadorInvalido() {
+        // Arrange
+        produto.setCodigoBarra("4012345678900");
+        // Act
+        RuntimeException thrown = assertThrows(
+                RuntimeException.class,
+                () -> driver.alterar(produto)
+        );
+        // Assert
+        assertEquals("Código de barra inválido!", thrown.getMessage());
+    }
+
+    @Test
+    @DisplayName("Quando um código de barra válido for fornecido para o produto")
+    void quandoCodigoBarraValido() {
+        // Arrange
+        produto.setCodigoBarra("7899137500100");
+        Mockito.when(produtoRepository.update(produto))
+                .thenReturn(Produto.builder()
+                        .id(10L)
+                        .codigoBarra("7899137500100")
+                        .nome("Produto Dez")
+                        .fabricante("Fabricante Dez")
+                        .preco(450.00)
+                        .build()
+                );
+        // Act
+        Produto resultado = driver.alterar(produto);
+        // Assert
+        assertEquals("7899137500100", resultado.getCodigoBarra());
+    }
 }
